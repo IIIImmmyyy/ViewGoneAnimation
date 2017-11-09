@@ -4,6 +4,7 @@ import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 /**
  * Created by 4399-蒋明伟 on 2017/11/9.
@@ -49,8 +50,20 @@ public class ViewController {
     private void runGoneAnimation(final View targetView) {
         //每次取最新的高度
         if (targetView.getVisibility() == View.VISIBLE) {
-            SparseIntArray targetViewHeightCache = ViewAnimationHelper.getInstance().getTargetViewHeightCache();
-            targetViewHeightCache.append(key, targetView.getHeight());
+            final SparseIntArray targetViewHeightCache = ViewAnimationHelper.getInstance().getTargetViewHeightCache();
+            Log.i("ViewController","view height :"+targetView.getHeight());
+            if (targetView.getHeight()==0){ //未初始化完成
+                targetView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        int height = targetView.getHeight();
+                        ViewAnimationHelper.getInstance().getTargetViewHeightCache().append(key, height);
+                        targetView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
+                });
+            }else {
+                targetViewHeightCache.append(key, targetView.getHeight());
+            }
         }
         ViewGoneAnimation animation = new ViewGoneAnimation(targetView.getHeight(), 0, new ViewGoneAnimation.onViewChangeListener() {
             @Override

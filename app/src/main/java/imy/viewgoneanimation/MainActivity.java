@@ -23,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
         first_Btn = (Button) findViewById(R.id.first_btn);
         hideBtn = (Button) findViewById(R.id.sec_btn);
         testBtn = (Button) findViewById(R.id.test_btn);
+        ViewAnimationHelper.getInstance().
+                attach(testBtn).setVisibility(View.GONE);
         hideBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
