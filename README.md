@@ -1,7 +1,7 @@
 # ViewGoneAnimation
 this is a View Gone Animation for Android .
 
-
+ ![image](https://github.com/IIIImmmyyy/ViewGoneAnimation/blob/master/jdfw.gif)
 <br> How to use
 ===
 
