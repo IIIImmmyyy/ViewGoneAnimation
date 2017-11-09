@@ -30,14 +30,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 ViewAnimationHelper.getInstance().
                         attach(nidaye).setVisibility(View.GONE);
-                ViewAnimationHelper.getInstance().attach(testBtn).setVisibility(View.GONE);
             }
         });
         showBtn .setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ViewAnimationHelper.getInstance().attach(nidaye).setVisibility(View.VISIBLE);
-                ViewAnimationHelper.getInstance().attach(testBtn).setVisibility(View.VISIBLE);
             }
         });
     }

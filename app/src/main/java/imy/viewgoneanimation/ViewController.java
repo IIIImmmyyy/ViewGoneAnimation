@@ -22,57 +22,66 @@ public class ViewController {
         //获取View对象
         View targetView = ViewAnimationHelper.getInstance().getTargetView(key);
         if (i == View.GONE) {
-            runGoneAnimation(targetView);
+            runGoneAnimation();
         } else if (i == View.VISIBLE) {
-            runVisibleAnimation(targetView);
+            runVisibleAnimation();
         }
 
     }
 
-    private void runVisibleAnimation(final View targetView) {
+    private void runVisibleAnimation() {
         SparseIntArray targetViewHeightCache = ViewAnimationHelper.getInstance().getTargetViewHeightCache();
         int i = targetViewHeightCache.get(key);
-       ViewGoneAnimation animation =  new ViewGoneAnimation(0, i, new ViewGoneAnimation.onViewChangeListener() {
+        Log.i("ViewController", "runVisibleAnimation" + i);
+        ViewGoneAnimation animation = new ViewGoneAnimation(0, i, new ViewGoneAnimation.onViewChangeListener() {
             @Override
             public void onChange(int i) {
-                if (targetView.getVisibility()!=View.VISIBLE){
-                    targetView.setVisibility(View.VISIBLE);
+                Log.i("ViewController", "i" + i);
+                if (i>0){
+                    View view = ViewAnimationHelper.getInstance().getTargetView(key);
+                    if (view.getVisibility() != View.VISIBLE) {
+                        view.setVisibility(View.VISIBLE);
+                    }
+                    ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+                    layoutParams.height = i;
+                    view.setLayoutParams(layoutParams);
                 }
-                ViewGroup.LayoutParams layoutParams = targetView.getLayoutParams();
-                layoutParams.height = i;
-                targetView.setLayoutParams(layoutParams);
+
             }
         });
         animation.setDuration(duration);
-        targetView.startAnimation(animation);
+        ViewAnimationHelper.getInstance().getTargetView(key).startAnimation(animation);
     }
 
-    private void runGoneAnimation(final View targetView) {
+    private void runGoneAnimation() {
         //每次取最新的高度
+        View targetView = ViewAnimationHelper.getInstance().getTargetView(key);
         if (targetView.getVisibility() == View.VISIBLE) {
             final SparseIntArray targetViewHeightCache = ViewAnimationHelper.getInstance().getTargetViewHeightCache();
-            Log.i("ViewController","view height :"+targetView.getHeight());
-            if (targetView.getHeight()==0){ //未初始化完成
+            Log.i("ViewController", "view height :" + targetView.getHeight());
+            if (targetView.getHeight() == 0) { //未初始化完成
                 targetView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
-                        int height = targetView.getHeight();
+                        View view = ViewAnimationHelper.getInstance().getTargetView(key);
+                        int height = view.getHeight();
                         ViewAnimationHelper.getInstance().getTargetViewHeightCache().append(key, height);
-                        targetView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                        view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                     }
                 });
-            }else {
+            } else {
                 targetViewHeightCache.append(key, targetView.getHeight());
             }
         }
         ViewGoneAnimation animation = new ViewGoneAnimation(targetView.getHeight(), 0, new ViewGoneAnimation.onViewChangeListener() {
             @Override
             public void onChange(int i) {
-                ViewGroup.LayoutParams layoutParams = targetView.getLayoutParams();
+                View view = ViewAnimationHelper.getInstance().getTargetView(key);
+                ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
                 layoutParams.height = i;
-                targetView.setLayoutParams(layoutParams);
+                view.setLayoutParams(layoutParams);
                 if (i == 0) {
-                    targetView.setVisibility(View.GONE);
+                    view.setVisibility(View.GONE);
                 }
             }
         });
