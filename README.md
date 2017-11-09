@@ -67,8 +67,10 @@ ViewAnimationHelper.getInstance().attach(testBtn).setVisibility(View.VISIBLE);
             android:text="show Btn"/>
     </LinearLayout>
 ```
-###this lib is support any view . so long as it extends ViewGroup
+``
+
+##this lib is support any view . so long as it extends ViewGroup
  
-##if you have suggest or want support more animation , you can commit in Issuse .
+#if you have suggest or want support more animation , you can commit in Issuse .
  
 
