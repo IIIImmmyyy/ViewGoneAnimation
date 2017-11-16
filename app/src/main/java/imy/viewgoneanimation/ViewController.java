@@ -1,4 +1,4 @@
-package com.app.gift.Helper.viewGoneHelper;
+package imy.viewgoneanimation;
 
 import android.util.Log;
 import android.util.SparseIntArray;
