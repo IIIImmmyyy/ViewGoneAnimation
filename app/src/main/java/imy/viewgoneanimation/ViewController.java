@@ -13,6 +13,11 @@ import android.view.ViewTreeObserver;
 public class ViewController {
     private int key;
     private int duration = 300;  // animation time
+    private boolean isCircle = false;
+
+    public void setCircle(boolean b) {
+        isCircle = b;
+    }
 
     public ViewController(int key) {
         this.key = key;
@@ -22,11 +27,42 @@ public class ViewController {
         //获取View对象
         View targetView = ViewAnimationHelper.getInstance().getTargetView(key);
         if (i == View.GONE) {
-            runGoneAnimation();
+            runGoneAnimation(false);
         } else if (i == View.VISIBLE) {
             runVisibleAnimation();
+        } else if (i == View.INVISIBLE) {
+            initViewHeight();
         }
+    }
 
+    private void initViewHeight() {
+        View targetView = ViewAnimationHelper.getInstance().getTargetView(key);
+        final SparseIntArray targetViewHeightCache = ViewAnimationHelper.getInstance().getTargetViewHeightCache();
+        if (targetView.getHeight() == 0) { //未初始化完成
+            targetView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    View view = ViewAnimationHelper.getInstance().getTargetView(key);
+                    int height = view.getHeight();
+                    ViewAnimationHelper.getInstance().getTargetViewHeightCache().append(key, height);
+                    view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+            });
+        } else {
+            targetViewHeightCache.append(key, targetView.getHeight());
+        }
+    }
+
+    public void setVisibility(int i, boolean isInit) {
+        //获取View对象
+        View targetView = ViewAnimationHelper.getInstance().getTargetView(key);
+        if (i == View.GONE) {
+            runGoneAnimation(isInit);
+        } else if (i == View.VISIBLE) {
+            runVisibleAnimation();
+        } else if (i == View.INVISIBLE) {
+            initViewHeight();
+        }
     }
 
     private void runVisibleAnimation() {
@@ -44,6 +80,9 @@ public class ViewController {
                     }
                     ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
                     layoutParams.height = i;
+                    if (isCircle) {
+                        layoutParams.width = i;
+                    }
                     view.setLayoutParams(layoutParams);
                 }
 
@@ -53,7 +92,7 @@ public class ViewController {
         ViewAnimationHelper.getInstance().getTargetView(key).startAnimation(animation);
     }
 
-    private void runGoneAnimation() {
+    private void runGoneAnimation(final boolean isInt) {
         //每次取最新的高度
         View targetView = ViewAnimationHelper.getInstance().getTargetView(key);
         if (targetView.getVisibility() == View.VISIBLE || targetView.getVisibility() == View.INVISIBLE) {
@@ -70,7 +109,14 @@ public class ViewController {
                     }
                 });
             } else {
-                targetViewHeightCache.append(key, targetView.getHeight());
+                if (isInt) {
+                    targetViewHeightCache.append(key, targetView.getHeight());
+                    View view = ViewAnimationHelper.getInstance().getTargetView(key);
+                    view.setVisibility(View.GONE);
+                    return;
+                } else {
+                    targetViewHeightCache.append(key, targetView.getHeight());
+                }
             }
         }
         ViewGoneAnimation animation = new ViewGoneAnimation(targetView.getHeight(), 0, new ViewGoneAnimation.onViewChangeListener() {
@@ -79,6 +125,9 @@ public class ViewController {
                 View view = ViewAnimationHelper.getInstance().getTargetView(key);
                 ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
                 layoutParams.height = i;
+                if (isCircle) {
+                    layoutParams.width = i;
+                }
                 view.setLayoutParams(layoutParams);
                 if (i == 0) {
                     view.setVisibility(View.GONE);
@@ -88,5 +137,6 @@ public class ViewController {
         animation.setDuration(duration);
         targetView.startAnimation(animation);
     }
+
 
 }

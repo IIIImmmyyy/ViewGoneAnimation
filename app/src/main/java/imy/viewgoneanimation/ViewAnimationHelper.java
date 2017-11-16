@@ -34,11 +34,11 @@ public class ViewAnimationHelper {
             vsr = new SoftReference<View>(view);
             viewCacheMap.append(view.hashCode(), vsr);
             //需判断View的状态 如果是Visibile才进行加入原始高度
-            if (view.getVisibility() == View.VISIBLE) {
+            if (view.getVisibility() == View.VISIBLE ||view.getVisibility() ==View.INVISIBLE) {
                 viewHeightCache.append(view.hashCode(), view.getHeight());
             }
         }
-        ViewController viewController = new ViewController(view.hashCode());
+        ViewController  viewController =new  ViewController(view.hashCode());
         return viewController;
     }
 
@@ -52,6 +52,6 @@ public class ViewAnimationHelper {
     }
 
     public SparseIntArray getTargetViewHeightCache() {
-       return  viewHeightCache;
+        return  viewHeightCache;
     }
 }
