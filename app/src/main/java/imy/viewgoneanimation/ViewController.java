@@ -37,7 +37,7 @@ public class ViewController {
             @Override
             public void onChange(int i) {
                 Log.i("ViewController", "i" + i);
-                if (i>0){
+                if (i > 0) {
                     View view = ViewAnimationHelper.getInstance().getTargetView(key);
                     if (view.getVisibility() != View.VISIBLE) {
                         view.setVisibility(View.VISIBLE);
@@ -56,7 +56,7 @@ public class ViewController {
     private void runGoneAnimation() {
         //每次取最新的高度
         View targetView = ViewAnimationHelper.getInstance().getTargetView(key);
-        if (targetView.getVisibility() == View.VISIBLE) {
+        if (targetView.getVisibility() == View.VISIBLE || targetView.getVisibility() == View.INVISIBLE) {
             final SparseIntArray targetViewHeightCache = ViewAnimationHelper.getInstance().getTargetViewHeightCache();
             Log.i("ViewController", "view height :" + targetView.getHeight());
             if (targetView.getHeight() == 0) { //未初始化完成
