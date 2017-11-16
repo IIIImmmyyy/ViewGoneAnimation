@@ -1,10 +1,13 @@
-package imy.viewgoneanimation;
+package com.app.gift.Helper.viewGoneHelper;
 
 import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+
+import imy.viewgoneanimation.ViewAnimationHelper;
+import imy.viewgoneanimation.ViewGoneAnimation;
 
 /**
  * Created by 4399-蒋明伟 on 2017/11/9.
@@ -15,6 +18,10 @@ public class ViewController {
     private int duration = 300;  // animation time
     private boolean isCircle = false;
 
+    public ViewController setDuration(int duration){
+        this.duration =duration;
+        return this;
+    }
     public void setCircle(boolean b) {
         isCircle = b;
     }
